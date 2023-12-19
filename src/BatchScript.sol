@@ -63,9 +63,11 @@ abstract contract BatchScript is Script, DelegatePrank {
     bytes32 private walletType;
     uint256 private mnemonicIndex;
     bytes32 private privateKey;
+    bytes32 private account;
 
     bytes32 private constant LOCAL = keccak256("local");
     bytes32 private constant LEDGER = keccak256("ledger");
+    bytes32 private constant ACCOUNT = keccak256("account");
 
     enum Operation {
         CALL,
@@ -166,6 +168,8 @@ abstract contract BatchScript is Script, DelegatePrank {
             privateKey = vm.envBytes32("PRIVATE_KEY");
         } else if (walletType == LEDGER) {
             mnemonicIndex = vm.envUint("MNEMONIC_INDEX");
+        } else if (walletType == ACCOUNT) {
+            account = vm.envBytes32("ACCOUNT");
         } else {
             revert("Unsupported wallet type");
         }
@@ -217,6 +221,8 @@ abstract contract BatchScript is Script, DelegatePrank {
                 vm.toString(mnemonicIndex),
                 " "
             );
+        } else if (walletType == ACCOUNT) {
+            wallet = string.concat("--account ", vm.toString(account), " ");
         } else {
             revert("Unsupported wallet type");
         }
