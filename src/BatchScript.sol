@@ -63,7 +63,7 @@ abstract contract BatchScript is Script, DelegatePrank {
     bytes32 private walletType;
     uint256 private mnemonicIndex;
     bytes32 private privateKey;
-    bytes32 private account;
+    string private account;
 
     bytes32 private constant LOCAL = keccak256("local");
     bytes32 private constant LEDGER = keccak256("ledger");
@@ -156,7 +156,7 @@ abstract contract BatchScript is Script, DelegatePrank {
             SAFE_API_BASE_URL = "https://safe-transaction-avalanche.safe.global/api/v1/safes/";
             SAFE_MULTISEND_ADDRESS = 0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761;
         } else if (chainId == 11155111) {
-            SAFE_API_BASE_URL = "https://safe-transaction-avalanche.safe.global/api/v1/safes/";
+            SAFE_API_BASE_URL = "https://safe-transaction-sepolia.safe.global/api/v1/safes/";
             SAFE_MULTISEND_ADDRESS = 0x998739BFdAAdde7C933B942a68053933098f9EDa;
         } else {
             revert("Unsupported chain");
@@ -169,7 +169,7 @@ abstract contract BatchScript is Script, DelegatePrank {
         } else if (walletType == LEDGER) {
             mnemonicIndex = vm.envUint("MNEMONIC_INDEX");
         } else if (walletType == ACCOUNT) {
-            account = vm.envBytes32("ACCOUNT");
+            account = vm.envString("ACCOUNT");
         } else {
             revert("Unsupported wallet type");
         }
@@ -222,7 +222,7 @@ abstract contract BatchScript is Script, DelegatePrank {
                 " "
             );
         } else if (walletType == ACCOUNT) {
-            wallet = string.concat("--account ", vm.toString(account), " ");
+            wallet = string.concat("--account ", account, " ");
         } else {
             revert("Unsupported wallet type");
         }
